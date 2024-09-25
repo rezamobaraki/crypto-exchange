@@ -59,6 +59,13 @@ class ListModelViewSet(mixins.ListModelMixin, GenericViewSet):
     pass
 
 
+class RetrieveModelViewSet(mixins.RetrieveModelMixin, GenericViewSet):
+    """
+    A viewset that provides retrieve action.
+    """
+    pass
+
+
 class RetrieveListModelViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
     """
     A viewset that provides retrieve and list actions.
