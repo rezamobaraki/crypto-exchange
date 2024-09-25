@@ -33,26 +33,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  locust:
-    container_name: crypto_exchange_locust
-    image: crypto_exchange_app:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: bash -c "locust -f commons/locust_file.py --host=http://0.0.0.0:8000"
-    depends_on:
-      - app
-      - redis
-      - postgres
-      - celery
-    env_file:
-      - .compose/config.env
-    networks:
-      - crypto-exchange
-    ports:
-      - "8089:8089"
-    restart: unless-stopped
-
   postgres:
     container_name: crypto_exchange_postgres
     image: postgres:16.2

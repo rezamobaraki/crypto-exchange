@@ -23,7 +23,7 @@ env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = env.str("SECRET_KEY", "django-insecure")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
@@ -148,6 +148,5 @@ from core.settings.third_parties.drf import *  # noqa
 from core.settings.third_parties.jwt import *  # noqa
 from core.settings.third_parties.swagger import *  # noqa
 from core.settings.third_parties.cache import *  # noqa
-from core.settings.third_parties.fraud_config import *  # noqa
 from core.settings.third_parties.celery import *  # noqa
 from core.celery import *  # noqa
