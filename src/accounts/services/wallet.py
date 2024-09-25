@@ -2,6 +2,7 @@ from django.db import transaction
 from django.db.models import F
 
 from accounts.models import Wallet
+from commons.messages.error_messages import ErrorMessages
 
 
 class WalletService:
@@ -17,6 +18,6 @@ class WalletService:
     def withdraw(cls, *, wallet_id: int, value: float) -> None:
         wallet = cls.model.objects.select_for_update().filter(id=wallet_id).first()
         if not wallet.check_balance(value):
-            raise ValueError('Insufficient balance')
+            raise ValueError(ErrorMessages.INSUFFICIENT_BALANCE.message)
         wallet.balance = F('balance') - value
         wallet.save(update_fields=['balance'])

@@ -16,6 +16,10 @@ class ErrorMessages(Enum):
         "message": _("Rate limit exceeded. Please try again later."),
         "code": "throttled"
     }
+    INSUFFICIENT_BALANCE = {
+        "message": _("Insufficient balance."),
+        "code": "insufficient_balance"
+    }
 
     @property
     def message(self):
