@@ -1,4 +1,4 @@
-from config.env import env  # noqa
+from core.env import env  # noqa
 
 from .base import *  # noqa
 
@@ -14,5 +14,5 @@ DATABASES = {
 }
 
 DEBUG_TOOLBAR_CONFIG = {
-    'IS_RUNNING_TESTS':  lambda _: False,
+    'IS_RUNNING_TESTS': lambda _: False,
 }

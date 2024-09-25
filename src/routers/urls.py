@@ -1,13 +1,15 @@
-from django.urls import path
+from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
+app_name = "api-v1"
+
 schema_view = get_schema_view(
     openapi.Info(
-        title="Boilerplate APIs",
+        title="Crypto Exchange APIs",
         default_version='v1',
-        description="This is a boilerplate for Django APIs",
+        description="Crypto Exchange Platform with Django and DRF",
         contact=openapi.Contact(email="rezam578@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
@@ -19,7 +21,8 @@ swagger = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
-
-urlpatterns = []
+urlpatterns = [
+    path("accounts/", include("routers.accounts", namespace="accounts"), name="accounts"),
+]
 
 urlpatterns += swagger

@@ -79,7 +79,7 @@ prepare-compose: ## Prepare the docker-compose environment
 		sed -i -e 's/POSTGRES_USER=USER/POSTGRES_USER=postgres/g' .compose/config.env; \
 		sed -i -e 's/POSTGRES_PASSWORD=PASSWORD/POSTGRES_PASSWORD=postgres/g' .compose/config.env; \
 		sed -i -e 's/POSTGRES_HOST=HOST/POSTGRES_HOST=crypto_exchange_postgres/g' .compose/config.env; \
-		sed -i -e 's/REDIS_HOST=LOCALHOST/REDIS_HOST=crypto_exchange_redis/g' .compose/config.env; \
+		sed -i -e 's/REDIS_HOST=HOST/REDIS_HOST=crypto_exchange_redis/g' .compose/config.env; \
 		sed -i -e 's/localhost:6379/crypto_exchange_redis:6379/g' .compose/config.env; \
 	fi;
 

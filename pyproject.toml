@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "simple-goodreads"
+name = "crypto-exchange"
 version = "0.1.0"
-description = "This is a simplified version of Goodreads API"
+description = "This is a simplified version of a crypto exchange platform."
 authors = ["Reza Mobaraki <rezam578@gmail.com>"]
 readme = "README.md"
 
@@ -23,6 +23,7 @@ flake8 = "^7.0.0"
 factory-boy = "^3.3.1"
 redis = "^5.0.8"
 django-celery-beat = "^2.7.0"
+django-extensions = "^3.2.3"
 
 
 [tool.poetry.dev-dependencies]
