@@ -6,6 +6,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from accounts.services.user import UserService
 from commons.messages.error_messages import ErrorMessages
 from commons.messages.log_messges import LogMessages
 
@@ -40,9 +41,9 @@ class RegisterSerializer(BaseAuthSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = User.objects.create_user(
+        user = UserService.create_user_and_wallet(
             username=validated_data["username"],
-            password=validated_data["password"],
+            password=validated_data["password"]
         )
         return self.generate_tokens(user)
 
