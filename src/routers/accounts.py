@@ -4,4 +4,5 @@ app_name = 'accounts'
 
 urlpatterns = [
     path('auth/', include('accounts.urls.authentication', namespace='authentication'), name='authentications'),
+    path('wallet/', include('accounts.urls.wallet', namespace='wallet'), name='wallets'),
 ]
