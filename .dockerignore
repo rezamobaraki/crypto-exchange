@@ -1,0 +1,5 @@
+.flake8
+config.example
+docker-compose.yaml
+README.md
+.github/

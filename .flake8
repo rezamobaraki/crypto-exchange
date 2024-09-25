@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 120
+exclude =
+    .env
+    .venv
+    config/django/*
+    .git
+    __pycache__
+    */migrations/*

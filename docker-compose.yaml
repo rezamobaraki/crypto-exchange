@@ -1,0 +1,87 @@
+name: boilerplate
+
+
+services:
+  app:
+    container_name: boilerplate_app
+    image: boilerplate_app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      bash -c "python manage.py migrate
+      && gunicorn --workers=3 --timeout=600 --bind=0.0.0.0:8000 core.wsgi:application"
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .compose/config.env
+    networks:
+      - goodreads
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+    volumes:
+      - app-data:/app
+
+  celery:
+    container_name: boilerplate_celery
+    image: boilerplate_app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    command: bash -c "celery -A config.celery worker -l INFO"
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .compose/config.env
+    networks:
+      - boilerplate
+    restart: always
+
+  redis:
+    container_name: boilerplate_redis
+    image: redis:7.2
+    command: [ "redis-server", "--requirepass", "redis_password" ]
+    networks:
+      - boilerplate
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - redis-data:/data
+
+  postgres:
+    container_name: boilerplate_postgres
+    image: postgres:16.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: boilerplate
+    networks:
+      - boilerplate
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+networks:
+  boilerplate:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+  app-data:
