@@ -27,8 +27,12 @@ RUN poetry install --no-root
 
 COPY src/ ./
 
+ENV DJANGO_SETTINGS_MODULE=core.settings.django.local
+
+RUN poetry run ./manage.py collectstatic
+
 # Expose port 8000
 EXPOSE 8000
 
 # Command to start the server using Gunicorn
-CMD ["gunicorn", "--workers=3", "--timeout=600", "--bind=0.0.0.0:8000", "config.wsgi:application"]
+CMD ["gunicorn", "--workers=3", "--timeout=600", "--bind=0.0.0.0:8000", "core.wsgi:application"]

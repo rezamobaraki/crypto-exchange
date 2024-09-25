@@ -8,14 +8,13 @@ ifneq (,$(wildcard $(ENV_FILE)))
     export $(shell sed 's/=.*//' $(ENV_FILE))
 endif
 
-.PHONY: help install runserver runserver-plus migrate make-migration dump-data create-superuser db-shell shell shell-plus show-urls test lint collect-static make-messages compile-messages build prepare-compose up up-force-build down
+.PHONY: help install runserver runserver-plus migrate make-migration dump-data create-superuser db-shell shell shell-plus show-urls test lint collect-static make-messages compile-messages build prepare-compose up up-force down seeder load-data
 
-help: ## Show this help
+help: ## Show this help message
 	@echo "Usage: make [target]"
-	@echo ""
-	@echo "Targets:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
-	@echo ""
+	@echo
+	@echo "Available targets:"
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 install: ## Install dependencies
 	$(POETRY) install
@@ -33,7 +32,10 @@ make-migration: ## Create a migration
 	$(POETRY) run $(MANAGE) makemigrations
 
 dump-data: ## Dump data
-	$(POETRY) run $(MANAGE) dumpdata
+	$(POETRY) run $(MANAGE) dumpdata $(ARGS)
+
+load-data: ## Load data
+	$(POETRY) run $(MANAGE) loaddata $(ARGS)
 
 create-superuser: ## Create a superuser
 	$(POETRY) run $(MANAGE) createsuperuser
@@ -72,20 +74,23 @@ prepare-compose: ## Prepare the docker-compose environment
 	@[ -d .compose ] || mkdir .compose
 
 	@if [ ! -f .compose/config.env ]; then \
-		cp config.example .compose/config.env; \
-		sed -i -e 's/localhost:6379/redis:6379/g' .compose/config.env; \
-		sed -i -e 's/POSTGRES_NAME=NAME/POSTGRES_NAME=boilerplate/g' .compose/config.env; \
+		cp config.example.env .compose/config.env; \
+		sed -i -e 's/POSTGRES_DB=NAME/POSTGRES_DB=crypto_exchange/g' .compose/config.env; \
 		sed -i -e 's/POSTGRES_USER=USER/POSTGRES_USER=postgres/g' .compose/config.env; \
 		sed -i -e 's/POSTGRES_PASSWORD=PASSWORD/POSTGRES_PASSWORD=postgres/g' .compose/config.env; \
-		sed -i -e 's/POSTGRES_HOST=HOST/POSTGRES_HOST=postgres/g' .compose/config.env; \
-		sed -i -e 's/REDIS_HOST=LOCALHOST/REDIS_HOST=redis/g' .compose/config.env; \
+		sed -i -e 's/POSTGRES_HOST=HOST/POSTGRES_HOST=crypto_exchange_postgres/g' .compose/config.env; \
+		sed -i -e 's/REDIS_HOST=LOCALHOST/REDIS_HOST=crypto_exchange_redis/g' .compose/config.env; \
+		sed -i -e 's/localhost:6379/crypto_exchange_redis:6379/g' .compose/config.env; \
 	fi;
 
 up: prepare-compose ## Start the Docker containers
 	sudo docker-compose up -d
 
-up-force-build: prepare-compose ## Start the Docker containers and force a rebuild
+up-force: prepare-compose ## Start the Docker containers and force a rebuild
 	sudo docker-compose up -d --build
 
 down: ## Stop the Docker containers
-	sudo docker-compose down
+	sudo docker-compose down -v
+
+seeder: ## Run the seeder
+	$(POETRY) run $(MANAGE) seeder $(ARGS)

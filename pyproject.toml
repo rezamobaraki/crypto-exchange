@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "boilerplate"
+name = "simple-goodreads"
 version = "0.1.0"
-description = "This is a boilerplate for django projects"
+description = "This is a simplified version of Goodreads API"
 authors = ["Reza Mobaraki <rezam578@gmail.com>"]
 readme = "README.md"
 
@@ -20,6 +20,10 @@ pytest = "^8.3.2"
 psycopg2-binary = "^2.9.9"
 celery = { extras = ["redis"], version = "^5.4.0" }
 flake8 = "^7.0.0"
+factory-boy = "^3.3.1"
+redis = "^5.0.8"
+django-celery-beat = "^2.7.0"
+
 
 [tool.poetry.dev-dependencies]
 django-debug-toolbar = "^4.4.2"
@@ -27,6 +31,7 @@ django-extensions = "^3.2.3"
 ipython = "^8.23.0"
 rich = "^13.7.1"
 werkzeug = "^3.0.3"
+locust = "^2.31.6"
 
 
 [build-system]

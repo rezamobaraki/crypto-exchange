@@ -1,10 +1,9 @@
-name: boilerplate
-
+name: crypto_exchange
 
 services:
   app:
-    container_name: boilerplate_app
-    image: boilerplate_app:latest
+    container_name: crypto_exchange_app
+    image: crypto_exchange_app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -17,9 +16,12 @@ services:
     env_file:
       - .compose/config.env
     networks:
-      - goodreads
+      - post-rating
     ports:
       - "8000:8000"
+    restart: unless-stopped
+    volumes:
+      - app-data:/app
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000/health/" ]
       interval: 30s
@@ -30,55 +32,72 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    restart: always
-    volumes:
-      - app-data:/app
 
-  celery:
-    container_name: boilerplate_celery
-    image: boilerplate_app:latest
+  locust:
+    container_name: crypto_exchange_locust
+    image: crypto_exchange_app:latest
     build:
       context: .
-      dockerfile: Dockerfile.local
-    command: bash -c "celery -A config.celery worker -l INFO"
+      dockerfile: Dockerfile
+    command: bash -c "locust -f commons/locust_file.py --host=http://0.0.0.0:8000"
+    depends_on:
+      - app
+      - redis
+      - postgres
+      - celery
+    env_file:
+      - .compose/config.env
+    networks:
+      - crypto-exchange
+    ports:
+      - "8089:8089"
+    restart: unless-stopped
+
+  postgres:
+    container_name: crypto_exchange_postgres
+    image: postgres:16.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: crypto_exchange
+    networks:
+      - crypto-exchange
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  celery:
+    container_name: crypto_exchange_celery
+    image: crypto_exchange_app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "celery -A core.celery worker --beat -l info "
     depends_on:
       - postgres
       - redis
     env_file:
       - .compose/config.env
     networks:
-      - boilerplate
+      - crypto-exchange
     restart: always
 
   redis:
-    container_name: boilerplate_redis
+    container_name: crypto_exchange_redis
     image: redis:7.2
     command: [ "redis-server", "--requirepass", "redis_password" ]
     networks:
-      - boilerplate
+      - crypto-exchange
     ports:
       - "6379:6379"
     restart: always
     volumes:
       - redis-data:/data
 
-  postgres:
-    container_name: boilerplate_postgres
-    image: postgres:16.2
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: boilerplate
-    networks:
-      - boilerplate
-    ports:
-      - "5433:5432"
-    restart: always
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-
 networks:
-  boilerplate:
+  crypto-exchange:
     driver: bridge
 
 volumes:
