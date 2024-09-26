@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from accounts.models import Wallet
 from accounts.services.wallet import WalletService
+from transactions.services.transaction import TransactionService
 
 
 class WalletSerializer(serializers.ModelSerializer):
@@ -22,5 +23,6 @@ class WalletDepositSerializer(WalletSerializer):
 
     def update(self, instance, validated_data):
         WalletService.deposit(wallet_id=instance.id, value=validated_data["amount"])
+        TransactionService.wallet_deposit(wallet_id=instance.id, amount=validated_data["amount"])
         instance.refresh_from_db()
         return instance
