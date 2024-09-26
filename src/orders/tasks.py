@@ -22,8 +22,8 @@ def process_aggregate_orders(*, order_id, crypto_name, amount, total_price):
     """
 
     redis_name = RedisNameTemplates.aggregate_orders(crypto_name=crypto_name)
-    RedisClient.hincrbyfloat(redis_name, "total_amount", amount)
-    RedisClient.hincrbyfloat(redis_name, "total_price", total_price)
+    RedisClient.hincrbyfloat(redis_name, "total_amount", float(amount))
+    RedisClient.hincrbyfloat(redis_name, "total_price", float(total_price))
     RedisClient.rpush(f"{redis_name}:order_ids", order_id)
 
     total_price = Decimal(RedisClient.hget(redis_name, "total_price") or 0)

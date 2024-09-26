@@ -19,7 +19,7 @@ class WalletService:
     @transaction.atomic
     def withdraw(cls, *, wallet_id: int, value: float):
         wallet = cls.repository.objects.select_for_update().filter(id=wallet_id).first()
-        if not wallet.check_balance(value):
+        if not cls.check_balance(wallet, value):
             raise ValueError(ErrorMessages.INSUFFICIENT_BALANCE.message)
         wallet.balance = F('balance') - value
         wallet.save(update_fields=['balance'])

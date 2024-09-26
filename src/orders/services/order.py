@@ -25,20 +25,19 @@ class OrderService:
     @transaction.atomic
     def create(cls, *, user, crypto, amount):
         total_price = crypto.price * Decimal(amount)
-        cls.wallet_service.withdraw(wallet_id=user.wallet.id, value=total_price, order_id=None)
+        cls.wallet_service.withdraw(wallet_id=user.wallet.id, value=total_price)
         order = Order.objects.create(
             user_id=user.id, crypto=crypto, amount=amount, total_price=total_price, state=OrderStates.PENDING
         )
         cls.transaction_service.wallet_withdraw(wallet_id=user.wallet.id, amount=total_price, order_id=order.id)
-        cls.process(order=order, crypto_id=crypto.id, crypto_name=crypto.name, amount=amount, total_price=total_price)
+        cls.process(order=order, crypto_name=crypto.name, amount=amount, total_price=total_price)
         return order
 
     @staticmethod
-    def process(order, crypto_id, crypto_name, amount, total_price):
+    def process(order, crypto_name, amount, total_price):
         if order.total_price < AGGREGATION_THRESHOLD:
             process_aggregate_orders.delay(
-                order_id=order.id, crypto_id=crypto_id, crypto_name=crypto_name,
-                amount=amount, total_price=total_price
+                order_id=order.id, crypto_name=crypto_name, amount=amount, total_price=total_price
             )
             order.is_aggregated = True
             order.save()
