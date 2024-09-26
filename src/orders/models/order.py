@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class Order(BaseModel):
-    wallet = models.ForeignKey(Wallet, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     crypto = models.ForeignKey(CryptoCurrency, on_delete=models.DO_NOTHING)
     amount = models.DecimalField(max_digits=10, decimal_places=8)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)

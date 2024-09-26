@@ -17,7 +17,7 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "total_price")
 
     def validate(self, attrs):
-        if not OrderService.check(wallet=attrs["user"].wallet, coin=attrs["crypto"], amount=attrs["amount"]):
+        if not OrderService.check(user=attrs["user"], crypto=attrs["crypto"], amount=attrs["amount"]):
             raise ValidationError(
                 message=ErrorMessages.INSUFFICIENT_BALANCE.message, code=ErrorMessages.INSUFFICIENT_BALANCE.code
             )
@@ -25,5 +25,5 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return OrderService.create(
-            user=validated_data["user"].wallet.id, coin=validated_data["crypto"], amount=validated_data["amount"]
+            user=validated_data["user"], crypto=validated_data["crypto"], amount=validated_data["amount"]
         )

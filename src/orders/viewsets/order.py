@@ -1,3 +1,5 @@
+from rest_framework.permissions import IsAuthenticated
+
 from commons.pagination import StandardResultsSetPagination
 from commons.viewsets import CreateRetrieveListModelViewSet
 from orders.models.order import Order
@@ -15,6 +17,9 @@ class OrderViewSet(CreateRetrieveListModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Order.objects.filter(wallet_id=self.request.user.wallet.id)
+        if self.request.user.is_authenticated:
+            return Order.objects.filter(user=self.request.user)
+        return Order.objects.none()

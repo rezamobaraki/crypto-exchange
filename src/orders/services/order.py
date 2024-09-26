@@ -17,20 +17,19 @@ class OrderService:
     transaction_service = TransactionService()
 
     @classmethod
-    def check(cls, *, wallet, coin, amount):
-        total_price = coin.price * amount
-        return cls.wallet_service.check_balance(wallet=wallet, amount=total_price)
+    def check(cls, *, user, crypto, amount):
+        total_price = crypto.price * amount
+        return cls.wallet_service.check_balance(wallet=user.wallet, amount=total_price)
 
     @classmethod
     @transaction.atomic
-    def create(cls, *, wallet_id, crypto, amount):
+    def create(cls, *, user, crypto, amount):
         total_price = crypto.price * Decimal(amount)
-        cls.wallet_service.withdraw(wallet_id=wallet_id, value=total_price, order_id=None)
+        cls.wallet_service.withdraw(wallet_id=user.wallet.id, value=total_price, order_id=None)
         order = Order.objects.create(
-            wallet_id=wallet_id, crypto=crypto, amount=amount,
-            total_price=total_price, state=OrderStates.PENDING
+            user_id=user.id, crypto=crypto, amount=amount, total_price=total_price, state=OrderStates.PENDING
         )
-        cls.transaction_service.wallet_withdraw(wallet_id=wallet_id, amount=total_price, order_id=order.id)
+        cls.transaction_service.wallet_withdraw(wallet_id=user.wallet.id, amount=total_price, order_id=order.id)
         cls.process(order=order, crypto_id=crypto.id, crypto_name=crypto.name, amount=amount, total_price=total_price)
         return order
 

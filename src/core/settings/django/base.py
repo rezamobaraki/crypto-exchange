@@ -34,6 +34,8 @@ LOCAL_APPS = [
     "accounts",
     "exchanges",
     "transactions",
+    "orders",
+
 ]
 
 THIRD_PARTY_APPS = [
@@ -150,6 +152,6 @@ from core.settings.third_parties.drf import *  # noqa
 from core.settings.third_parties.jwt import *  # noqa
 from core.settings.third_parties.swagger import *  # noqa
 from core.settings.third_parties.cache import *  # noqa
-from core.settingsthird_parties.redis import *  # noqa
+from core.settings.third_parties.redis import *  # noqa
 from core.settings.third_parties.celery import *  # noqa
 from core.settings.third_parties.app import *  # noqa
