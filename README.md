@@ -116,12 +116,12 @@ flowchart TD
     Exchanges --> ExternalExchange
     Core --> Modules
     Core --> CeleryTasks
-    click Client "https://example.com/client" "Go to Client Documentation"
-    click API "https://example.com/api" "Go to API Documentation"
-    click Accounts "https://example.com/accounts" "Go to Accounts Module Documentation"
-    click Exchanges "https://example.com/exchanges" "Go to Exchanges Module Documentation"
-    click Orders "https://example.com/orders" "Go to Orders Module Documentation"
-    click Transactions "https://example.com/transactions" "Go to Transactions Module Documentation"
+    click Client "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#setup-and-installation" "Go to Client Documentation"
+    click API "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#api-design" "Go to API Documentation"
+    click Accounts "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#accounts" "Go to Accounts Module Documentation"
+    click Exchanges "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#exchanges" "Go to Exchanges Module Documentation"
+    click Orders "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#orders" "Go to Orders Module Documentation"
+    click Transactions "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#transactions" "Go to Transactions Module Documentation"
 ```
 
 #### Application Servers (Django)
