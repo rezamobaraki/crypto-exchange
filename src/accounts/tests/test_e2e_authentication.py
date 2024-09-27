@@ -1,8 +1,11 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.urls import reverse
 from django.contrib.auth.models import User
+from django.test import override_settings
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
 
+
+@override_settings(DJANGO_SETTINGS_MODULE='core.settings.django.test')
 class AuthE2ETestCase(APITestCase):
 
     def test_register_success(self):

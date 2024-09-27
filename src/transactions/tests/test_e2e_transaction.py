@@ -1,11 +1,16 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.urls import reverse
-from accounts.models import Wallet
-from django.contrib.auth.models import User
-from transactions.models.transaction import Transaction
 from decimal import Decimal
 
+from django.contrib.auth.models import User
+from django.test import override_settings
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+
+from accounts.models import Wallet
+from transactions.models.transaction import Transaction
+
+
+@override_settings(DJANGO_SETTINGS_MODULE='core.settings.django.test')
 class TransactionE2ETestCase(APITestCase):
 
     def setUp(self):

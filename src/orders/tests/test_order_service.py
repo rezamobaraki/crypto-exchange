@@ -1,12 +1,13 @@
 from decimal import Decimal
 
-from django.test import TestCase
+from django.test import override_settings, TestCase
 
 from accounts.models import Wallet
 from exchanges.models.crypto_currency import CryptoCurrency
 from orders.services.order import OrderService
 
 
+@override_settings(DJANGO_SETTINGS_MODULE='core.settings.django.test')
 class OrderServiceTestCase(TestCase):
 
     def setUp(self):

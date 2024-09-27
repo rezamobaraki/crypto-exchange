@@ -4,7 +4,10 @@ from django.urls import reverse
 from accounts.models import Wallet
 from django.contrib.auth.models import User
 from decimal import Decimal
+from django.test import override_settings
 
+
+@override_settings(DJANGO_SETTINGS_MODULE='core.settings.django.test')
 class WalletE2ETestCase(APITestCase):
 
     def setUp(self):

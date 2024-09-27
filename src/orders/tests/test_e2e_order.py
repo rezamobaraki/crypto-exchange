@@ -1,11 +1,16 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.urls import reverse
-from django.contrib.auth.models import User
-from exchanges.models.crypto_currency import CryptoCurrency
-from accounts.models import Wallet
 from decimal import Decimal
 
+from django.contrib.auth.models import User
+from django.test import override_settings
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+
+from accounts.models import Wallet
+from exchanges.models.crypto_currency import CryptoCurrency
+
+
+@override_settings(DJANGO_SETTINGS_MODULE='core.settings.django.test')
 class OrderE2ETestCase(APITestCase):
 
     def setUp(self):
