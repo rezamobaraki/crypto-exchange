@@ -730,7 +730,7 @@ class Order(BaseModel):
 
 ---
 
-## Environment Variables
+### Environment Variables
 
 Ensure the following environment variables are set in the `config.env` file:
 
@@ -751,7 +751,26 @@ JWT_SECRET_KEY = your_jwt_secret_key
 
 ---
 
-## Makefile Commands
+### data seeding
+
+- Seed Command is in docker-compose file, you can run it by the following command:
+
+```bash
+make seeder
+```
+
+- Seeder will apply initial data to the database, including cryptocurrencies, users, and wallets.
+- Admin:
+    - username: admin
+    - password: new_password
+    - wallet balance: 1000.00
+- Crypto:
+    - name: ABAN
+    - price: 20.00
+
+---
+
+### Makefile Commands
 
 This project includes a `Makefile` for automating common tasks:
 
