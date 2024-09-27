@@ -15,7 +15,7 @@ AGGREGATION_THRESHOLD = settings.ORDER_AGGREGATION_THRESHOLD
 
 
 @shared_task
-def process_aggregate_orders(*, order_id, crypto_name, total_price):
+def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
     """
     Persistent: Use AOF (Append Only File) for persistence.
     Atomicity:
@@ -27,15 +27,15 @@ def process_aggregate_orders(*, order_id, crypto_name, total_price):
     """
 
     redis_name = RedisNameTemplates.aggregate_orders(crypto_name=crypto_name)
-    RedisClient.hincrbyfloat(redis_name, "total_price", float(total_price))
+    RedisClient.hincrbyfloat(redis_name, "total_price", float(new_total_price))
     RedisClient.rpush(f"{redis_name}:order_ids", order_id)
 
-    total_price = Decimal(RedisClient.hget(redis_name, "total_price") or 0)
-    if total_price >= AGGREGATION_THRESHOLD:
+    new_total_price = Decimal(RedisClient.hget(redis_name, "total_price") or 0)
+    if new_total_price >= AGGREGATION_THRESHOLD:
         order_ids = RedisClient.lrange(f"{redis_name}:order_ids", 0, -1)
 
         with transaction.atomic():
-            ExchangeService.buy_from_exchange(crypto_name=crypto_name, amount=total_price)
+            ExchangeService.buy_from_exchange(crypto_name=crypto_name, amount=new_total_price)
             Order.objects.filter(id__in=order_ids).update(state=OrderStates.COMPLETED)
 
         RedisClient.delete(redis_name)
@@ -105,5 +105,5 @@ def periodical_aggregated_orders_check_db():
                     order_id=order.id,
                     crypto_name=order.crypto.name,
                     amount=order.amount,
-                    total_price=order.total_price
+                    new_total_price=order.total_price
                 )

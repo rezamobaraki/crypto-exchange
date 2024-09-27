@@ -30,14 +30,14 @@ class OrderService:
             user_id=user.id, crypto=crypto, amount=amount, total_price=total_price, state=OrderStates.PENDING
         )
         cls.transaction_service.wallet_withdraw(wallet_id=user.wallet.id, amount=total_price, order_id=order.id)
-        cls.process(order=order, crypto_name=crypto.name, amount=amount, total_price=total_price)
+        cls.process(order=order, crypto_name=crypto.name, total_price=total_price)
         return order
 
     @staticmethod
     def process(order, crypto_name, total_price):
         if order.total_price < AGGREGATION_THRESHOLD:
             process_aggregate_orders.delay(
-                order_id=order.id, crypto_name=crypto_name, total_price=total_price
+                order_id=order.id, crypto_name=crypto_name, new_total_price=total_price
             )
             order.is_aggregated = True
             order.save()
