@@ -17,12 +17,26 @@ AGGREGATION_THRESHOLD = settings.ORDER_AGGREGATION_THRESHOLD
 @shared_task
 def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
     """
-    Persistent: Use AOF (Append Only File) for persistence.
-    Atomicity:
-      with RedisClient.pipeline() as pipe:
-        pipe.hincrbyfloat(redis_name, "total_price", float(total_price))
-        pipe.rpush(f"{redis_name}:order_ids", order_id)
-        pipe.execute()
+    This function processes aggregate orders using Redis Lock to handle concurrency and Redis Pipeline to ensure atomicity of the Redis operations.
+    Assumption: I assume that Only one worker always handles the orders. or I can use Redis Locks to handle the concurrency issues.
+    Persistent: Use AOF (Append Only File) for persistence during application crashes.
+    Update:
+        - Redis Locks (Distributed Locking):
+                Use Redis Locks to ensure that only one worker modifies the order aggregation data at a time.
+                This approach will give you the strongest guarantee that no race conditions or concurrent updates occur.
+          ```
+          if lock.acquire(blocking=True):
+                # Critical Section
+                # Modify the order aggregation data
+            lock.release()
+          ```
+        - Redis Pipeline for Atomicity
+            ```
+             with RedisClient.pipeline() as pipe:
+                # Start the transaction
+            pipe.execute()
+            ```
+        - Using Redis WATCH for Optimistic Locking
 
     """
 
