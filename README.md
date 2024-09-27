@@ -39,7 +39,8 @@ fully containerized using Docker and supports background tasks with Celery.
 
 - **User Authentication**: Secure user registration and login using **JWT** tokens.
 - **Wallet Management**: Manage user wallets with support for deposits and withdrawals.
-- **Order Processing**: Create, process, and settle cryptocurrency purchase orders, beside aggregate small order on **Redis**
+- **Order Processing**: Create, process, and settle cryptocurrency purchase orders, beside aggregate small order on *
+  *Redis**
 - **Asynchronous Tasks**: Handle order processing and exchange settlements using **Celery**.
 - **International Exchanges**: Interface with international exchanges for cryptocurrency settlements.
 - **Swagger and ReDoc**: Auto-generated API documentation for easy reference.
@@ -147,6 +148,29 @@ flowchart TD
 
 - Process background tasks (e.g., updating order statistics, handling transactions).
 - Handle computationally intensive operations asynchronously.
+
+---
+
+### Consistency and CAP Theorem Considerations
+
+The system prioritizes Availability and Partition Tolerance (AP) from the CAP theorem, sacrificing strong consistency
+for better performance. This choice is suitable for a cryptocurrency exchange where occasional inconsistencies are
+tolerable.
+
+#### Eventual Consistency
+
+- Transactions may not be immediately reflected in wallet balances.
+- Background processes ensure data converges to a consistent state over time.
+
+### *Fault Tolerance and Reliability
+
+- Data Replication
+    - Use multi-region database replication for disaster recovery.
+    - Implement read replicas for improved read performance.
+
+- Monitoring and Alerting
+    - Implement comprehensive monitoring using tools (e.g., Prometheus, Grafana).
+    - Set up alerts for critical system metrics and error rates.
 
 ---
 
@@ -484,7 +508,7 @@ This section outlines the available API endpoints for interacting with the crypt
 
 - **Task: process_large_order**: Handles immediate purchase orders where the total price exceeds $10.
 - **Task: process_aggregate_orders**: Handles order aggregation and initiates purchase when cumulative orders surpass $
-  10.
+    10.
 
 ---
 
@@ -638,26 +662,7 @@ class Order(BaseModel):
     - Offload computationally intensive tasks to Celery workers.
     - Use message queues to decouple components and ensure reliable processing.
 
-### Consistency and CAP Theorem Considerations
-
-The system prioritizes Availability and Partition Tolerance (AP) from the CAP theorem, sacrificing strong consistency
-for better performance. This choice is suitable for a cryptocurrency exchange where occasional inconsistencies are
-tolerable.
-
-#### Eventual Consistency
-
-- Transactions may not be immediately reflected in wallet balances.
-- Background processes ensure data converges to a consistent state over time.
-
-### *Fault Tolerance and Reliability
-
-- Data Replication
-    - Use multi-region database replication for disaster recovery.
-    - Implement read replicas for improved read performance.
-
-- Monitoring and Alerting
-    - Implement comprehensive monitoring using tools (e.g., Prometheus, Grafana).
-    - Set up alerts for critical system metrics and error rates.
+---
 
 ## Setup and Installation
 
