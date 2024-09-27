@@ -14,6 +14,8 @@ class WalletService:
     @transaction.atomic
     def deposit(cls, *, wallet_id: int, value: float):
         cls.repository.objects.select_for_update().filter(id=wallet_id).update(balance=F('balance') + value)
+        cls.transaction_service.wallet_deposit(wallet_id=wallet_id, amount=value)
+
 
     @classmethod
     @transaction.atomic
