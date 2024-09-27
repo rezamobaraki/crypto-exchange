@@ -510,22 +510,6 @@ This section outlines the available API endpoints for interacting with the crypt
 - **Task: process_aggregate_orders**: Handles order aggregation and initiates purchase when cumulative orders surpass \$10.
 
 ```python
-from decimal import Decimal
-
-from celery import shared_task
-from django.conf import settings
-from django.db import transaction
-from redis.exceptions import LockError
-
-from core.settings.third_parties.redis_templates import RedisNameTemplates
-from exchanges.services.exchange_integration import ExchangeService
-from orders.enums import OrderStates
-from orders.models.order import Order
-
-RedisClient = settings.REDIS
-AGGREGATION_THRESHOLD = settings.ORDER_AGGREGATION_THRESHOLD
-LOCK_TIMEOUT = 60  # Define an appropriate lock timeout
-
 
 @shared_task
 def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
@@ -535,7 +519,7 @@ def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
     """
 
     redis_name = RedisNameTemplates.aggregate_orders(crypto_name=crypto_name)
-    lock = RedisClient.lock(f"{redis_name}:lock", timeout=LOCK_TIMEOUT)  # Create a Redis lock
+    lock = RedisClient.lock(f"{redis_name}:lock", timeout=settings.LOCK_TIMEOUT)  # Create a Redis lock
 
     try:
         # Acquiring the Redis lock (blocking until the lock is acquired)
@@ -549,7 +533,7 @@ def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
             # Fetch the updated total price from Redis
             updated_total_price = Decimal(RedisClient.hget(redis_name, "total_price") or 0)
 
-            if updated_total_price >= AGGREGATION_THRESHOLD:
+            if updated_total_price >= settings.AGGREGATION_THRESHOLD:
                 # Fetch all the order IDs associated with this batch from Redis
                 order_ids = RedisClient.lrange(f"{redis_name}:order_ids", 0, -1)
 
