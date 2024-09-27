@@ -17,6 +17,7 @@ class RegisterViewsSet(FixStatusMixin, CreateModelViewSet):
 class LoginViewSet(FixStatusMixin, CreateModelViewSet):
     fix_status = status.HTTP_200_OK
     authentication_classes = []
+
     permission_classes = []
     throttle_classes = [LoginRateThrottle]
     serializer_class = LoginSerializer

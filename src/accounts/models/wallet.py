@@ -12,11 +12,8 @@ class Wallet(BaseModel):
     here in order to have a wallet for each coin. However, for the sake of simplicity, we will assume that
     each user has only one currency wallet.
     """
-    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
-    balance = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    user = models.OneToOneField(User, on_delete=models.DO_NOTHING, related_name='wallet')
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return f'{self.user}'
-
-    def check_balance(self, value: float) -> bool:
-        return self.balance >= value

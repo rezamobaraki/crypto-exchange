@@ -23,6 +23,9 @@ swagger = [
 ]
 urlpatterns = [
     path("accounts/", include("routers.accounts", namespace="accounts"), name="accounts"),
+    path("exchanges/", include("routers.exchanges", namespace="exchanges"), name="exchanges"),
+    path("orders/", include("routers.orders", namespace="orders"), name="orders"),
+    path("transactions/", include("routers.transactions", namespace="transactions"), name="transactions"),
 ]
 
 urlpatterns += swagger

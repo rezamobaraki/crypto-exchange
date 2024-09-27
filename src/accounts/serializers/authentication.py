@@ -41,10 +41,8 @@ class RegisterSerializer(BaseAuthSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = UserService.create_user_and_wallet(
-            username=validated_data["username"],
-            password=validated_data["password"]
-        )
+        user = UserService.create_user_with_wallet(username=validated_data["username"],
+                                                   password=validated_data["password"])
         return self.generate_tokens(user)
 
 

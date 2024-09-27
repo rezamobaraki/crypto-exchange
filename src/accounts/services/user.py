@@ -10,7 +10,7 @@ class UserService:
 
     @classmethod
     @transaction.atomic
-    def create_user_and_wallet(cls, *, username: str, password: str) -> model:
+    def create_user_with_wallet(cls, *, username: str, password: str) -> model:
         user = cls.model.objects.create_user(username=username, password=password)
         Wallet.objects.create(user=user)
         return user
