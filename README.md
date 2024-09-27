@@ -39,8 +39,8 @@ fully containerized using Docker and supports background tasks with Celery.
 
 - **User Authentication**: Secure user registration and login using **JWT** tokens.
 - **Wallet Management**: Manage user wallets with support for deposits and withdrawals.
-- **Order Processing**: Create, process, and settle cryptocurrency purchase orders, beside aggregate small order on *
-  *Redis**
+- **Order Processing**: Create, process, and settle cryptocurrency purchase orders, beside aggregate small order on
+  **Redis**
 - **Asynchronous Tasks**: Handle order processing and exchange settlements using **Celery**.
 - **International Exchanges**: Interface with international exchanges for cryptocurrency settlements.
 - **Swagger and ReDoc**: Auto-generated API documentation for easy reference.
