@@ -35,6 +35,7 @@ LOCAL_APPS = [
     "exchanges",
     "transactions",
     "orders",
+    "commons",
 
 ]
 

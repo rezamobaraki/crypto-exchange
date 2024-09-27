@@ -9,6 +9,7 @@ services:
       dockerfile: Dockerfile
     command: >
       bash -c "python manage.py migrate
+      && python manage.py seeder --users=10 --crypto=10
       && gunicorn --workers=3 --timeout=600 --bind=0.0.0.0:8000 core.wsgi:application"
     depends_on:
       - postgres
