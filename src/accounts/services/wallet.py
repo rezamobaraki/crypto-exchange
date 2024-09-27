@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import transaction
 from django.db.models import F
 
@@ -12,14 +14,14 @@ class WalletService:
 
     @classmethod
     @transaction.atomic
-    def deposit(cls, *, wallet_id: int, value: float):
+    def deposit(cls, *, wallet_id: int, value: Decimal):
         cls.repository.objects.select_for_update().filter(id=wallet_id).update(balance=F('balance') + value)
         cls.transaction_service.wallet_deposit(wallet_id=wallet_id, amount=value)
 
 
     @classmethod
     @transaction.atomic
-    def withdraw(cls, *, wallet_id: int, value: float):
+    def withdraw(cls, *, wallet_id: int, value: Decimal):
         wallet = cls.repository.objects.select_for_update().filter(id=wallet_id).first()
         if not cls.check_balance(wallet, value):
             raise ValueError(ErrorMessages.INSUFFICIENT_BALANCE.message)
@@ -27,5 +29,5 @@ class WalletService:
         wallet.save(update_fields=['balance'])
 
     @classmethod
-    def check_balance(cls, wallet, amount: float) -> bool:
+    def check_balance(cls, wallet, amount: Decimal) -> bool:
         return wallet.balance >= amount
