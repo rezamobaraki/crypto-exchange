@@ -34,10 +34,10 @@ class OrderService:
         return order
 
     @staticmethod
-    def process(order, crypto_name, amount, total_price):
+    def process(order, crypto_name, total_price):
         if order.total_price < AGGREGATION_THRESHOLD:
             process_aggregate_orders.delay(
-                order_id=order.id, crypto_name=crypto_name, amount=amount, total_price=total_price
+                order_id=order.id, crypto_name=crypto_name, total_price=total_price
             )
             order.is_aggregated = True
             order.save()

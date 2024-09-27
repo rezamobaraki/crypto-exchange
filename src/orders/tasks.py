@@ -15,12 +15,11 @@ AGGREGATION_THRESHOLD = settings.ORDER_AGGREGATION_THRESHOLD
 
 
 @shared_task
-def process_aggregate_orders(*, order_id, crypto_name, amount, total_price):
+def process_aggregate_orders(*, order_id, crypto_name, total_price):
     """
     Persistent: Use AOF (Append Only File) for persistence.
     Atomicity:
       with RedisClient.pipeline() as pipe:
-        pipe.hincrbyfloat(redis_name, "total_amount", float(amount))
         pipe.hincrbyfloat(redis_name, "total_price", float(total_price))
         pipe.rpush(f"{redis_name}:order_ids", order_id)
         pipe.execute()
@@ -28,7 +27,6 @@ def process_aggregate_orders(*, order_id, crypto_name, amount, total_price):
     """
 
     redis_name = RedisNameTemplates.aggregate_orders(crypto_name=crypto_name)
-    RedisClient.hincrbyfloat(redis_name, "total_amount", float(amount))
     RedisClient.hincrbyfloat(redis_name, "total_price", float(total_price))
     RedisClient.rpush(f"{redis_name}:order_ids", order_id)
 
