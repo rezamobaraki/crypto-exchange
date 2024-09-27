@@ -18,6 +18,7 @@ AGGREGATION_THRESHOLD = settings.ORDER_AGGREGATION_THRESHOLD
 def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
     """
     This function processes aggregate orders using Redis Lock to handle concurrency and Redis Pipeline to ensure atomicity of the Redis operations.
+
     Assumption: I assume that Only one worker always handles the orders. or I can use Redis Locks to handle the concurrency issues.
     Persistent: Use AOF (Append Only File) for persistence during application crashes.
     Update:
@@ -68,7 +69,6 @@ def process_large_order(order_id):
 @shared_task
 def periodical_aggregated_orders_check_redis():
     """
-    !! YAGNI: You Aren't Gonna Need It !!
     This task will periodically check for aggregated orders and process them if the total price is greater than or equal to the threshold.
     if the total price is greater than or equal to the threshold, it will buy the crypto from the exchange and update the state of the orders to COMPLETED.
     """

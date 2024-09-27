@@ -504,12 +504,73 @@ This section outlines the available API endpoints for interacting with the crypt
 
 ---
 
-### **Asynchronous Processing**
+### Asynchronous Processing
 
-- **Task: process_large_order**: Handles immediate purchase orders where the total price exceeds $10.
-- **Task: process_aggregate_orders**: Handles order aggregation and initiates purchase when cumulative orders surpass $
-    10.
+- **Task: process_large_order**: Handles immediate purchase orders where the total price exceeds \$10.
+- **Task: process_aggregate_orders**: Handles order aggregation and initiates purchase when cumulative orders surpass \$10.
 
+```python
+from decimal import Decimal
+
+from celery import shared_task
+from django.conf import settings
+from django.db import transaction
+from redis.exceptions import LockError
+
+from core.settings.third_parties.redis_templates import RedisNameTemplates
+from exchanges.services.exchange_integration import ExchangeService
+from orders.enums import OrderStates
+from orders.models.order import Order
+
+RedisClient = settings.REDIS
+AGGREGATION_THRESHOLD = settings.ORDER_AGGREGATION_THRESHOLD
+LOCK_TIMEOUT = 60  # Define an appropriate lock timeout
+
+
+@shared_task
+def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
+    """
+    This function processes aggregate orders using Redis Lock to handle concurrency 
+    and Redis Pipeline to ensure atomicity of the Redis operations.
+    """
+
+    redis_name = RedisNameTemplates.aggregate_orders(crypto_name=crypto_name)
+    lock = RedisClient.lock(f"{redis_name}:lock", timeout=LOCK_TIMEOUT)  # Create a Redis lock
+
+    try:
+        # Acquiring the Redis lock (blocking until the lock is acquired)
+        if lock.acquire(blocking=True):
+            with RedisClient.pipeline() as pipe:
+                # Use pipeline for atomic operations
+                pipe.hincrbyfloat(redis_name, "total_price", float(new_total_price))
+                pipe.rpush(f"{redis_name}:order_ids", order_id)
+                pipe.execute()  # Execute all the pipelined commands atomically
+
+            # Fetch the updated total price from Redis
+            updated_total_price = Decimal(RedisClient.hget(redis_name, "total_price") or 0)
+
+            if updated_total_price >= AGGREGATION_THRESHOLD:
+                # Fetch all the order IDs associated with this batch from Redis
+                order_ids = RedisClient.lrange(f"{redis_name}:order_ids", 0, -1)
+
+                # Execute the exchange buy process in an atomic transaction
+                with transaction.atomic():
+                    ExchangeService.buy_from_exchange(crypto_name=crypto_name, amount=updated_total_price)
+                    Order.objects.filter(id__in=order_ids).update(state=OrderStates.COMPLETED)
+
+                # Clean up Redis keys for the current batch of aggregated orders
+                RedisClient.delete(redis_name)
+                RedisClient.delete(f"{redis_name}:order_ids")
+
+    except LockError:
+        # Handle failure to acquire the lock
+        print("Failed to acquire the Redis lock. Retrying...")
+        process_aggregate_orders.delay(order_id=order_id, crypto_name=crypto_name, new_total_price=new_total_price)
+
+    finally:
+        # Ensure that the lock is always released, even if an error occurs
+        lock.release()
+```
 ---
 
 ### **Aggregation Logic**
