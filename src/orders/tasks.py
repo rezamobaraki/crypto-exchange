@@ -16,6 +16,7 @@ AGGREGATION_THRESHOLD = settings.ORDER_AGGREGATION_THRESHOLD
 
 @shared_task
 def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
+    # TODO(Refactor) : it should broken down into smaller functions for better readability and maintainability (SRP)
     """
     This function processes aggregate orders using Redis Lock to handle concurrency and Redis Pipeline to ensure atomicity of the Redis operations.
 
