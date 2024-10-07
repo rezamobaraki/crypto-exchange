@@ -151,12 +151,12 @@ flowchart TD
 
 ---
 
-### Consistency and CAP Theorem Considerations
-The system prioritizes **Consistency (C)** and **Partition Tolerance (P)** from the CAP theorem, while maintaining a balanced approach to **Availability (A)**. In a financial system, such as a cryptocurrency exchange, strong consistency is crucial to ensure the accuracy of transactions and wallet balances. This design choice reduces the risk of double-spending and ensures users have a clear understanding of their available funds.
 
-#### Eventual Consistency
-- Transactions may not be immediately reflected in wallet balances due to the system's architectural decisions.
-- Background processes are implemented to ensure that data eventually converges to a consistent state, using strategies like asynchronous updates and reconciliation processes.
+### Consistency and CAP Theorem Considerations
+The system prioritizes **Consistency (C)** and **Partition Tolerance (P)** from the CAP theorem, ensuring strong consistency to guarantee the accuracy of transactions and wallet balances. This design choice minimizes the risk of double-spending and maintains a reliable understanding of user funds.
+
+- I consider **Eventual consistancy** for background processes (aggregate orders) that are implemented to ensure that data eventually converges to a consistent state, using strategies like asynchronous updates and reconciliation processes.
+
 
 ### Fault Tolerance and Reliability
 - **Data Replication**
