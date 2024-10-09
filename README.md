@@ -151,26 +151,25 @@ flowchart TD
 
 ---
 
+
 ### Consistency and CAP Theorem Considerations
+The system prioritizes **Consistency (C)** and **Partition Tolerance (P)** from the CAP theorem, ensuring strong consistency to guarantee the accuracy of transactions and wallet balances. This design choice minimizes the risk of double-spending and maintains a reliable understanding of user funds.
 
-The system prioritizes Availability and Partition Tolerance (AP) from the CAP theorem, sacrificing strong consistency
-for better performance. This choice is suitable for a cryptocurrency exchange where occasional inconsistencies are
-tolerable.
+- I consider **Eventual consistancy** for background processes (aggregate orders) that are implemented to ensure that data eventually converges to a consistent state, using strategies like asynchronous updates and reconciliation processes.
 
-#### Eventual Consistency
 
-- Transactions may not be immediately reflected in wallet balances.
-- Background processes ensure data converges to a consistent state over time.
+### Fault Tolerance and Reliability
+- **Data Replication**
+  - Multi-region database replication is employed for disaster recovery, ensuring that the system can recover quickly from failures.
+  - Read replicas are used to enhance read performance and reduce latency, allowing for faster access to frequently requested data.
 
-### *Fault Tolerance and Reliability
+- **Monitoring and Alerting**
+  - Comprehensive monitoring is established using tools such as Prometheus and Grafana, providing real-time insights into system performance.
+  - Alerts are configured for critical system metrics and error rates to promptly address issues before they affect users.
 
-- Data Replication
-    - Use multi-region database replication for disaster recovery.
-    - Implement read replicas for improved read performance.
-
-- Monitoring and Alerting
-    - Implement comprehensive monitoring using tools (e.g., Prometheus, Grafana).
-    - Set up alerts for critical system metrics and error rates.
+### Additional Considerations
+- **Security Measures**: Given the financial nature of the platform, robust security protocols, including multi-factor authentication and encryption, are implemented to safeguard user data.
+- **Transaction Integrity**: Strong mechanisms are in place to validate transactions and ensure their integrity, further enhancing user trust in the platform.
 
 ---
 
