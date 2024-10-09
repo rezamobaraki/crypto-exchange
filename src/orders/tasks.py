@@ -13,7 +13,7 @@ from orders.models.order import Order
 RedisClient = settings.REDIS
 AGGREGATION_THRESHOLD = settings.ORDER_AGGREGATION_THRESHOLD
 
-
+# it can consider as retrying the task if it fails
 @shared_task
 def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
     # TODO(Refactor) : it should broken down into smaller functions for better readability and maintainability (SRP)
@@ -23,7 +23,7 @@ def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
     Assumption: I assume that Only one worker always handles the orders. or I can use Redis Locks to handle the concurrency issues.
     Persistent: Use AOF (Append Only File) for persistence during application crashes.
     Update:
-        - Redis Locks (Distributed Locking):
+        - Redis Locks (Distributed Locking): 	Single command per request
                 Use Redis Locks to ensure that only one worker modifies the order aggregation data at a time.
                 This approach will give you the strongest guarantee that no race conditions or concurrent updates occur.
           ```
@@ -32,7 +32,7 @@ def process_aggregate_orders(*, order_id, crypto_name, new_total_price):
                 # Modify the order aggregation data
             lock.release()
           ```
-        - Redis Pipeline for Atomicity
+        - Redis Pipeline for Optimize multiple command execution
             ```
              with RedisClient.pipeline() as pipe:
                 # Start the transaction
