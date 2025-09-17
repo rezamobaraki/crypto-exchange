@@ -116,12 +116,12 @@ flowchart TD
     Exchanges --> ExternalExchange
     Core --> Modules
     Core --> CeleryTasks
-    click Client "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#setup-and-installation" "Go to Client Documentation"
-    click API "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#api-design" "Go to API Documentation"
-    click Accounts "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#accounts" "Go to Accounts Module Documentation"
-    click Exchanges "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#exchanges" "Go to Exchanges Module Documentation"
-    click Orders "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#orders" "Go to Orders Module Documentation"
-    click Transactions "https://github.com/MrRezoo/crypto-exchange?tab=readme-ov-file#transactions" "Go to Transactions Module Documentation"
+    click Client "https://github.com/rezamobaraki/crypto-exchange?tab=readme-ov-file#setup-and-installation" "Go to Client Documentation"
+    click API "https://github.com/rezamobaraki/crypto-exchange?tab=readme-ov-file#api-design" "Go to API Documentation"
+    click Accounts "https://github.com/rezamobaraki/crypto-exchange?tab=readme-ov-file#accounts" "Go to Accounts Module Documentation"
+    click Exchanges "https://github.com/rezamobaraki/crypto-exchange?tab=readme-ov-file#exchanges" "Go to Exchanges Module Documentation"
+    click Orders "https://github.com/rezamobaraki/crypto-exchange?tab=readme-ov-file#orders" "Go to Orders Module Documentation"
+    click Transactions "https://github.com/rezamobaraki/crypto-exchange?tab=readme-ov-file#transactions" "Go to Transactions Module Documentation"
 ```
 
 #### Application Servers (Django)
@@ -730,7 +730,7 @@ class Order(BaseModel):
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/MrRezoo/django-crypto-exchange.git
+   git clone https://github.com/rezamobaraki/django-crypto-exchange.git
    cd django-crypto-exchange
    ```
 
