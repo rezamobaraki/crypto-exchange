@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-LABEL authors="Reza Mobaraki ~ Rezoo"
+LABEL authors="Reza Mobaraki ~ rezamobaraki"
 
 # Stage 1: Build stage
 
