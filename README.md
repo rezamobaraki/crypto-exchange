@@ -730,8 +730,8 @@ class Order(BaseModel):
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/rezamobaraki/django-crypto-exchange.git
-   cd django-crypto-exchange
+   git clone https://github.com/rezamobaraki/crypto-exchange.git
+   cd crypto-exchange
    ```
 
 2. Install dependencies using Poetry:
